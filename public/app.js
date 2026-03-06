@@ -64,12 +64,26 @@
     const selectedDateInput = document.querySelector('input[name="date"]');
     const selectedTimeInput = document.querySelector('input[name="time"]');
     const timeslotContainer = document.querySelector('[data-timeslots]');
+    const selectedSlotMessage = document.querySelector('[data-selected-slot]');
     const monthLabel = calendarRoot.querySelector('[data-month-label]');
     const prevBtn = calendarRoot.querySelector('[data-prev-month]');
     const nextBtn = calendarRoot.querySelector('[data-next-month]');
 
     let currentMonth = new Date();
     currentMonth.setDate(1);
+
+    const updateSelectedSlotMessage = () => {
+      if (!selectedSlotMessage) return;
+      if (selectedDateInput.value && selectedTimeInput.value) {
+        selectedSlotMessage.textContent = `Selected: ${selectedDateInput.value} at ${selectedTimeInput.value}.`;
+        return;
+      }
+      if (selectedDateInput.value) {
+        selectedSlotMessage.textContent = `Selected date: ${selectedDateInput.value}. Now choose a start time.`;
+        return;
+      }
+      selectedSlotMessage.textContent = 'Step 1: Select a date and start time to continue.';
+    };
 
     const fetchAvailability = async (monthKey) => {
       const response = await fetch(`/api/availability?serviceId=${serviceId}&month=${monthKey}`);
@@ -85,6 +99,10 @@
 
       const grid = calendarRoot.querySelector('.calendar-grid');
       grid.innerHTML = '';
+      selectedDateInput.value = '';
+      selectedTimeInput.value = '';
+      timeslotContainer.innerHTML = '';
+      updateSelectedSlotMessage();
       const startDay = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1).getDay();
       const daysInMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0).getDate();
       monthLabel.textContent = currentMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
@@ -124,7 +142,9 @@
           calendarRoot.querySelectorAll('.calendar-day').forEach((el) => el.classList.remove('selected'));
           cell.classList.add('selected');
           selectedDateInput.value = dateKey;
+          selectedTimeInput.value = '';
           timeslotContainer.innerHTML = '';
+          updateSelectedSlotMessage();
 
           startTimes.forEach((time) => {
             const slotKey = `${dateKey}|${time}`;
@@ -140,6 +160,7 @@
               timeslotContainer.querySelectorAll('.timeslot').forEach((el) => el.classList.remove('selected'));
               slot.classList.add('selected');
               selectedTimeInput.value = time;
+              updateSelectedSlotMessage();
             });
             timeslotContainer.appendChild(slot);
           });

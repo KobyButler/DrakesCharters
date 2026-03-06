@@ -4,10 +4,17 @@
 <section class="hero">
   <div class="container">
     <div class="hero-card">
+      <p class="section-kicker hero-kicker">Guided Trips on Fish Lake</p>
       <h1>Plan your perfect day on the water with S&amp;H Fishing.</h1>
       <p>From trophy lake trout to first-time family catches, we run organized, safe, and fun guided trips built around your goals.</p>
-      <div>
+      <div class="hero-tags" aria-label="Trip highlights">
+        <span class="hero-tag">Species-focused trips</span>
+        <span class="hero-tag">Family-friendly guidance</span>
+        <span class="hero-tag">Local water knowledge</span>
+      </div>
+      <div class="hero-actions">
         <a class="button" href="/book">Book Your Trip</a>
+        <a class="button secondary" href="#target-species">View Target Species</a>
       </div>
     </div>
   </div>
@@ -15,8 +22,46 @@
 
 <section class="section">
   <div class="container">
+    <p class="section-kicker">Why Anglers Book With Us</p>
     <h2>About Us</h2>
-    <p class="lead">S&amp;H Fishing is a locally owned charter service built for anglers who want an organized, relaxed, and high-performing day on the water. From first-timers to experienced fishermen, we tailor each trip to the season, conditions, and your goals.</p>
+    <p class="lead">S&amp;H Fishing is a locally owned charter service built for anglers who want an organized, relaxed, and high-performing day on the water. From first-timers to experienced fishermen, we tailor each trip to your goals and target species: Lake trout, Splake, Kokanee, and Yellow perch.</p>
+  </div>
+</section>
+
+<section class="section" id="target-species">
+  <div class="container">
+    <p class="section-kicker">Target Species</p>
+    <h2>Fish the species you actually want to chase.</h2>
+    <p class="lead">Trips are built around your preferred target species and current conditions so your day has a clear game plan from the start.</p>
+    <div class="card-grid species-grid">
+      <article class="card species-card">
+        <h3>Lake Trout</h3>
+        <img class="species-photo" src="/uploads/species/lake-trout.jpg" alt="Lake trout in clear water" loading="lazy" />
+        <p>Primary target for anglers chasing bigger fish and deep-water structure.</p>
+      </article>
+      <article class="card species-card">
+        <h3>Splake</h3>
+        <img class="species-photo" src="/uploads/species/splake.jpg" alt="Splake near shoreline rocks" loading="lazy" />
+        <p>Great option for mixed-action days and strong cold-water fights.</p>
+      </article>
+      <article class="card species-card">
+        <h3>Kokanee</h3>
+        <img class="species-photo" src="/uploads/species/kokanee.jpg" alt="Kokanee salmon profile" loading="lazy" />
+        <p>Fast-paced action and a favorite for anglers looking for steady bites.</p>
+      </article>
+      <article class="card species-card">
+        <h3>Yellow Perch</h3>
+        <img class="species-photo" src="/uploads/species/yellow-perch.jpg" alt="Yellow perch with striped body" loading="lazy" />
+        <p>Fun for groups and families with consistent action in the right windows.</p>
+      </article>
+    </div>
+    <p class="species-source">
+      Species photos via Wikimedia Commons:
+      <a href="https://commons.wikimedia.org/wiki/File:Lake_trout_fishes_salvelinus_namaycush.jpg" target="_blank" rel="noopener">Lake trout</a>,
+      <a href="https://commons.wikimedia.org/wiki/File:Splake_-_33749890944.jpg" target="_blank" rel="noopener">Splake</a>,
+      <a href="https://commons.wikimedia.org/wiki/File:Kokanee_salmon.jpg" target="_blank" rel="noopener">Kokanee</a>,
+      <a href="https://commons.wikimedia.org/wiki/File:Yellow_Perch_(Perca_flavescens)_(cropped).jpg" target="_blank" rel="noopener">Yellow perch</a>.
+    </p>
   </div>
 </section>
 
@@ -85,21 +130,25 @@
           <li>Full day $500 (8hrs)</li>
           <li>Half day $350 (5hrs)</li>
           <li>Custom kids trip (Contact for more info)</li>
+          <li>Target species: Lake trout, Splake, Kokanee, Yellow perch</li>
         </ul>
       </div>
       <div class="card">
         <h3>Send a Message</h3>
+        <p class="field-hint">Typical response time: same day.</p>
         <div data-contact-success></div>
         <form method="post" action="/contact">
           <input type="hidden" name="csrf" value="<%= csrfToken %>" />
           <input type="text" name="company" style="display:none" tabindex="-1" autocomplete="off" />
-          <div class="form-group">
-            <label for="firstName">First Name</label>
-            <input id="firstName" name="firstName" required />
-          </div>
-          <div class="form-group">
-            <label for="lastName">Last Name</label>
-            <input id="lastName" name="lastName" required />
+          <div class="form-row two-col">
+            <div class="form-group">
+              <label for="firstName">First Name</label>
+              <input id="firstName" name="firstName" required />
+            </div>
+            <div class="form-group">
+              <label for="lastName">Last Name</label>
+              <input id="lastName" name="lastName" required />
+            </div>
           </div>
           <div class="form-group">
             <label for="email">Email</label>

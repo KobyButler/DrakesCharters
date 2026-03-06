@@ -3,8 +3,23 @@
 
 <section class="section">
   <div class="container">
+    <p class="section-kicker">Booking Flow</p>
     <h1>Schedule Your Trip</h1>
     <p class="lead">Request availability for <strong><%= service.name %></strong>. Select a date and start time, then complete the request form.</p>
+    <div class="booking-steps" aria-label="Booking steps">
+      <div class="step-item">
+        <span class="step-index">1</span>
+        <span>Select date and time</span>
+      </div>
+      <div class="step-item">
+        <span class="step-index">2</span>
+        <span>Share trip details</span>
+      </div>
+      <div class="step-item">
+        <span class="step-index">3</span>
+        <span>Get confirmation</span>
+      </div>
+    </div>
     <% if (settings.paymentsEnabled === 'true') { %>
       <div class="notice">Payments are enabled. You will receive a secure payment link after your request is confirmed.</div>
     <% } %>
@@ -23,6 +38,7 @@
       </div>
       <div class="card">
         <h3>Request Availability</h3>
+        <p class="field-hint" data-selected-slot aria-live="polite">Step 1: Select a date and start time to continue.</p>
         <form method="post" action="/book/<%= service.id %>/request" data-booking-form>
           <input type="hidden" name="csrf" value="<%= csrfToken %>" />
           <input type="text" name="company" style="display:none" tabindex="-1" autocomplete="off" />

@@ -3,39 +3,38 @@
 
 <section class="section">
   <div class="container">
+    <p class="section-kicker">Trip Planning</p>
     <h1>Places to Stay and Eat</h1>
-    <p class="lead">Local favorites near the marina. Update these recommendations anytime in the admin dashboard.</p>
+    <p class="lead">Local favorites near the marina to make trip planning easy.</p>
 
     <div class="card-grid">
       <div class="card">
         <h3>Places to Stay</h3>
-        <% lodgingList.forEach((place) => { %>
-          <div style="margin-bottom:12px;">
-            <strong><%= place.name %></strong>
-            <p><%= place.description %></p>
-            <a class="button secondary" href="<%= place.url %>" target="_blank" rel="noopener">Go to Site</a>
-          </div>
-        <% }) %>
+        <div class="place-list">
+          <article class="place-item">
+            <strong>Bowery Haven</strong>
+            <p>Lakeside cabins and accommodations close to Fish Lake launch points.</p>
+            <a class="button secondary" href="https://boweryhaven.com/" target="_blank" rel="noopener">Go to Site</a>
+          </article>
+          <article class="place-item">
+            <strong>Lakeside Resort</strong>
+            <p>Comfortable resort stay with quick access to the water and local amenities.</p>
+            <a class="button secondary" href="https://www.fishlakeresorts.com" target="_blank" rel="noopener">Go to Site</a>
+          </article>
+        </div>
       </div>
       <div class="card">
         <h3>Places to Eat</h3>
-        <% foodList.forEach((place) => { %>
-          <div style="margin-bottom:12px;">
-            <strong><%= place.name %></strong>
-            <p><%= place.description %></p>
-            <a class="button secondary" href="<%= place.url %>" target="_blank" rel="noopener">Go to Site</a>
-          </div>
-        <% }) %>
+        <div class="place-list">
+          <% foodList.forEach((place) => { %>
+            <article class="place-item">
+              <strong><%= place.name %></strong>
+              <p><%= place.description %></p>
+              <a class="button secondary" href="<%= place.url %>" target="_blank" rel="noopener">Go to Site</a>
+            </article>
+          <% }) %>
+        </div>
       </div>
-    </div>
-
-    <div class="card" style="margin-top: 24px;">
-      <h3>Dispersed Camping</h3>
-      <ul>
-        <% campingList.forEach((item) => { %>
-          <li><%= item %></li>
-        <% }) %>
-      </ul>
     </div>
   </div>
 </section>

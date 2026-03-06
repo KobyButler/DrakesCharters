@@ -3,25 +3,26 @@
 
 <section class="section">
   <div class="container">
+    <p class="section-kicker">Simple Booking</p>
     <h1>Book Your Trip</h1>
-    <p class="lead">Choose a package below. For custom kids trips, contact us directly for trip details.</p>
-    <div class="card-grid">
+    <p class="lead">Choose a package below. Full day and half day trips can target species of choice: Lake trout, Splake, Kokanee, and Yellow perch.</p>
+    <div class="card-grid trip-grid">
       <% services.forEach((service) => { %>
-        <div class="card">
+        <div class="card trip-card">
           <h3><%= service.name %></h3>
           <p><span class="badge"><%= service.duration_hours > 0 ? `${service.duration_hours} hours` : 'Custom duration' %></span></p>
+          <% const isCustom = service.price <= 0; %>
+          <% const tripFit = service.name.toLowerCase().includes('full') ? 'Best for full-day coverage and multiple target windows.' : service.name.toLowerCase().includes('half') ? 'Great for focused action in a shorter timeframe.' : 'Built around your group and preferred pace on the water.'; %>
+          <p class="card-note"><%= tripFit %></p>
           <p><%= service.description %></p>
+          <% if (!isCustom) { %>
+            <p class="field-hint">Target species: Lake trout, Splake, Kokanee, Yellow perch.</p>
+          <% } %>
           <p><strong><%= service.price > 0 ? `$${service.price}` : 'Contact for more info' %></strong></p>
           <% if (service.price > 0) { %>
             <a class="button" href="/book/<%= service.id %>">Request Availability</a>
           <% } else { %>
             <a class="button" href="/#contact">Contact for Details</a>
-          <% } %>
-          <% if (member) { %>
-            <form method="post" action="/member/save/<%= service.id %>" style="margin-top:10px;">
-              <input type="hidden" name="csrf" value="<%= csrfToken %>" />
-              <button class="button secondary" type="submit">Save Trip</button>
-            </form>
           <% } %>
         </div>
       <% }) %>

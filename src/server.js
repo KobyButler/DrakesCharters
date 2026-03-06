@@ -172,13 +172,36 @@ const siteDefaults = () => ({
   analyticsEnabled: 'false'
 });
 
+const speciesTargetSentence = 'Will target species of choice. Lake trout, Splake, Kokanee, Yellow perch.';
+
+const withSpeciesTargets = (description) => {
+  const value = (description || '').trim();
+  if (!value) return speciesTargetSentence;
+  const hasSpecies =
+    /lake trout/i.test(value) &&
+    /splake/i.test(value) &&
+    /kokanee/i.test(value) &&
+    /yellow perch/i.test(value);
+  if (hasSpecies) return value;
+  return `${value} ${speciesTargetSentence}`;
+};
+
 const seedDefaults = () => {
   const serviceCount = db.prepare('SELECT COUNT(*) as count FROM services').get().count;
   if (serviceCount === 0) {
     const insert = db.prepare('INSERT INTO services (name, duration_hours, description, price, start_times_json) VALUES (?, ?, ?, ?, ?)');
-    insert.run('Full day', 8, 'Full-day guided trip for anglers looking to maximize time on the water.', 500, JSON.stringify(['06:00', '07:00']));
-    insert.run('Half day', 5, 'Shorter guided trip with the same focused coaching and local expertise.', 350, JSON.stringify(['06:00', '12:00']));
+    insert.run('Full day', 8, withSpeciesTargets('Full-day guided trip for anglers looking to maximize time on the water.'), 500, JSON.stringify(['06:00', '07:00']));
+    insert.run('Half day', 5, withSpeciesTargets('Shorter guided trip with the same focused coaching and local expertise.'), 350, JSON.stringify(['06:00', '12:00']));
     insert.run('Custom kids trip', 0, 'Kid-focused custom trip. Contact us for timing, length, and details.', 0, JSON.stringify(['08:00']));
+  }
+
+  // Backfill target species text for existing Full day / Half day services.
+  const targetServices = db.prepare('SELECT id, description FROM services WHERE name IN (?, ?)').all('Full day', 'Half day');
+  for (const service of targetServices) {
+    const updated = withSpeciesTargets(service.description);
+    if (updated !== service.description) {
+      db.prepare('UPDATE services SET description = ? WHERE id = ?').run(updated, service.id);
+    }
   }
 
   const defaults = siteDefaults();
@@ -188,19 +211,33 @@ const seedDefaults = () => {
     }
   }
 
-  if (getSetting('lodgingList', null) === null) {
-    setSetting('lodgingList', JSON.stringify([
-      {
-        name: 'Harborview Lodge',
-        description: 'Rustic rooms with sunrise views and walking access to the marina.',
-        url: 'https://example.com'
-      },
-      {
-        name: 'Cedar Creek Cabins',
-        description: 'Family-friendly cabins with full kitchens and lakefront fire pits.',
-        url: 'https://example.com'
-      }
-    ]));
+  const requestedLodgingList = [
+    {
+      name: 'Bowery Haven',
+      description: 'Lakeside cabins and accommodations close to Fish Lake launch points.',
+      url: 'https://boweryhaven.com/'
+    },
+    {
+      name: 'Lakeside Resort',
+      description: 'Comfortable resort stay with quick access to the water and local amenities.',
+      url: 'https://www.fishlakeresorts.com'
+    }
+  ];
+  const lodgingRaw = getSetting('lodgingList', null);
+  if (lodgingRaw === null) {
+    setSetting('lodgingList', JSON.stringify(requestedLodgingList));
+  } else {
+    let lodgingList = [];
+    try {
+      lodgingList = JSON.parse(lodgingRaw);
+    } catch {
+      lodgingList = [];
+    }
+    const lodgingNames = Array.isArray(lodgingList) ? lodgingList.map((item) => (item.name || '').toLowerCase()) : [];
+    const hasLegacyDefaults = lodgingNames.includes('harborview lodge') || lodgingNames.includes('cedar creek cabins');
+    if (hasLegacyDefaults) {
+      setSetting('lodgingList', JSON.stringify(requestedLodgingList));
+    }
   }
 
   if (getSetting('foodList', null) === null) {
@@ -537,12 +574,10 @@ app.get('/know-before-you-go', (req, res) => {
 app.get('/places', (req, res) => {
   withMeta(res, {
     title: 'Places to Stay and Eat | S&H Fishing',
-    description: 'Local lodging, dining, and camping recommendations near the marina.'
+    description: 'Local lodging and dining recommendations near the marina.'
   });
-  const lodgingList = JSON.parse(res.locals.settings.lodgingList || '[]');
   const foodList = JSON.parse(res.locals.settings.foodList || '[]');
-  const campingList = JSON.parse(res.locals.settings.campingList || '[]');
-  res.render('places', { lodgingList, foodList, campingList });
+  res.render('places', { foodList });
 });
 
 app.get('/member/login', (req, res) => {
